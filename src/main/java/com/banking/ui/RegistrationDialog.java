@@ -3,13 +3,15 @@ package com.banking.ui;
 import com.banking.model.User;
 import com.banking.service.AuthenticationService;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import javax.imageio.ImageIO;
 
 public class RegistrationDialog extends JDialog {
 
@@ -36,7 +38,7 @@ public class RegistrationDialog extends JDialog {
 
     private void loadBackgroundImage() {
         try {
-            backgroundImage = ImageIO.read(new File("assets/bg.jpg")); // same path as login page
+            backgroundImage = ImageIO.read(new File("C:\\Users\\Kazim\\Desktop\\Bank\\src\\main\\resources\\icon\\backbg.png"));
         } catch (IOException e) {
             System.out.println("Background image not found: " + e.getMessage());
         }
@@ -58,20 +60,36 @@ public class RegistrationDialog extends JDialog {
         registerButton = new JButton("Register");
         cancelButton = new JButton("Cancel");
 
-        // Button styling
-        registerButton.setBackground(new Color(255, 255, 255, 230));
-        registerButton.setForeground(Color.BLACK);
-        registerButton.setFont(new Font("Arial", Font.BOLD, 13));
-        registerButton.setFocusPainted(false);
+        // Style both buttons
+        styleButton(registerButton);
+        styleButton(cancelButton);
+    }
 
-        cancelButton.setBackground(new Color(255, 255, 255, 230));
-        cancelButton.setForeground(Color.BLACK);
-        cancelButton.setFont(new Font("Arial", Font.BOLD, 13));
-        cancelButton.setFocusPainted(false);
+    private void styleButton(JButton button) {
+        button.setPreferredSize(new Dimension(130, 40));
+        button.setBackground(Color.WHITE);
+        button.setForeground(Color.BLACK);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setFocusPainted(false);
+        button.setOpaque(true);
+        button.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2, true));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        button.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(new Color(0, 123, 255));
+                button.setForeground(Color.WHITE);
+            }
+
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(Color.WHITE);
+                button.setForeground(Color.BLACK);
+            }
+        });
     }
 
     private void setupUI() {
-        // Create main background panel with image
+        // ---------- Background Panel ----------
         JPanel backgroundPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -79,26 +97,27 @@ public class RegistrationDialog extends JDialog {
                 if (backgroundImage != null) {
                     g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
                 } else {
-                    g.setColor(new Color(0, 51, 102)); // fallback color if image not found
+                    g.setColor(new Color(0, 51, 102));
                     g.fillRect(0, 0, getWidth(), getHeight());
                 }
             }
         };
         backgroundPanel.setLayout(new GridBagLayout());
-        setContentPane(backgroundPanel); // ensures image is painted behind all components
+        setContentPane(backgroundPanel);
 
-        // Transparent form panel
+        // ---------- Form Panel ----------
         JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBackground(new Color(255, 255, 255, 190)); // translucent white
-        formPanel.setBorder(BorderFactory.createEmptyBorder(25, 45, 25, 45));
+        formPanel.setBackground(new Color(255, 255, 255, 200)); // translucent white
+        formPanel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
+        formPanel.setPreferredSize(new Dimension(550, 470)); // slightly taller
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Title
+        // ---------- Title ----------
         JLabel titleLabel = new JLabel("Create New Account");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
         titleLabel.setForeground(Color.BLACK);
 
         gbc.gridx = 0;
@@ -109,6 +128,7 @@ public class RegistrationDialog extends JDialog {
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
 
+        // ---------- Input Fields ----------
         addFormField(formPanel, gbc, "Username:", usernameField, 1);
         addFormField(formPanel, gbc, "Password:", passwordField, 2);
         addFormField(formPanel, gbc, "Confirm Password:", confirmPasswordField, 3);
@@ -117,9 +137,10 @@ public class RegistrationDialog extends JDialog {
         addFormField(formPanel, gbc, "Email:", emailField, 6);
         addFormField(formPanel, gbc, "Phone Number:", phoneField, 7);
 
-        // Buttons
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        // ---------- Buttons Panel ----------
+        JPanel buttonPanel = new JPanel();
         buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 40, 15)); // More spacing
         buttonPanel.add(registerButton);
         buttonPanel.add(cancelButton);
 
@@ -127,15 +148,15 @@ public class RegistrationDialog extends JDialog {
         gbc.gridy = 8;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
         formPanel.add(buttonPanel, gbc);
 
-        // Add form to background panel (centered)
         backgroundPanel.add(formPanel);
     }
 
     private void addFormField(JPanel panel, GridBagConstraints gbc, String labelText, JComponent field, int row) {
         JLabel label = new JLabel(labelText);
-        label.setFont(new Font("Arial", Font.PLAIN, 14));
+        label.setFont(new Font("Segoe UI", Font.BOLD, 14));
         label.setForeground(Color.BLACK);
 
         gbc.gridx = 0;
